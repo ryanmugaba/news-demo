@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Personalized News Demo</title>
+  <style>
+    body { font-family: Arial; max-width: 700px; margin: auto; padding: 20px; }
+    h3 { margin-bottom: 5px; }
+    p { margin: 2px 0; }
+    hr { margin: 15px 0; }
+  </style>
+</head>
+<body>
+  <h1>News Feed</h1>
+  <label for="personality">Choose your vibe:</label>
+  <select id="personality">
+    <option value="Progressive">Progressive</option>
+    <option value="Traditional">Traditional</option>
+    <option value="Bold">Bold</option>
+    <option value="Witty">Witty</option>
+  </select>
+  <div id="feed"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.5.1/tabletop.min.js"></script>
+  <script>
+    let sheetURL = "YOUR_PUBLISHED_GOOGLE_SHEET_URL_HERE";
+
+    function showNews(data) {
+      let userPersonality = document.getElementById('personality').value;
+      let html = "";
+      data.forEach(article => {
+        html += `<h3>${article['Title']}</h3>
+                 <p><strong>TL;DR:</strong> ${article['TL;DR']}</p>
+                 <p><strong>${userPersonality} version:</strong> ${article[userPersonality]}</p>
+                 <a href="${article['URL']}" target="_blank">Read more</a><hr>`;
+      });
+      document.getElementById('feed').innerHTML = html;
+    }
+
+    Tabletop.init({
+      key: sheetURL,
+      callback: showNews,
+      simpleSheet: true
+    });
+
+    document.getElementById('personality').addEventListener('change', () => {
+      Tabletop.init({ key: sheetURL, callback: showNews, simpleSheet: true });
+    });
+  </script>
+</body>
+</html>
